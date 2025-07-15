@@ -24,7 +24,9 @@ class CurrencyViewModel : ViewModel() {
             "USD" to CurrencyValue("USD", ""),
             "EUR" to CurrencyValue("EUR", ""),
             "ARS" to CurrencyValue("ARS", ""),
-            "PYG" to CurrencyValue("PYG", "")
+            "PYG" to CurrencyValue("PYG", ""),
+            "BRL" to CurrencyValue("BRL", ""),
+            "UYU" to CurrencyValue("UYU", "")
         )
     )
     val currencyValues: State<Map<String, CurrencyValue>> = _currencyValues
@@ -40,16 +42,20 @@ class CurrencyViewModel : ViewModel() {
         mapOf(
             "EUR" to "",
             "ARS" to "",
-            "PYG" to ""
+            "PYG" to "",
+            "BRL" to "",
+            "UYU" to ""
         )
     )
     val fetchedRates: State<Map<String, String>> = _fetchedRates
 
     private val exchangeRates = mutableMapOf<String, Double>(
         "USD" to 1.0,
-        "EUR" to 0.85,  // Default values
-        "ARS" to 350.0, // Default values
-        "PYG" to 7300.0 // Default values
+        "EUR" to 0.8566,  // Default values
+        "ARS" to 1266.0, // Default values
+        "PYG" to 7828.0, // Default values
+        "BRL" to 5.0, // Default values
+        "UYU" to 40.0 // Default values
     )
 
     fun setExchangeRate(currency: String, rate: Double) {
@@ -108,17 +114,21 @@ class CurrencyViewModel : ViewModel() {
                 if (rates.isNotEmpty()) {
                     // Update exchange rates with API data
                     exchangeRates["USD"] = 1.0
-                    exchangeRates["EUR"] = rates["EUR"] ?: 0.85
-                    exchangeRates["ARS"] = rates["ARS"] ?: 350.0
-                    exchangeRates["PYG"] = rates["PYG"] ?: 7300.0
+                    exchangeRates["EUR"] = rates["EUR"] ?: 0.8566
+                    exchangeRates["ARS"] = rates["ARS"] ?: 1266.0
+                    exchangeRates["PYG"] = rates["PYG"] ?: 7828.0
+                    exchangeRates["BRL"] = rates["BRL"] ?: 5.0
+                    exchangeRates["UYU"] = rates["UYU"] ?: 40.0
                     
                     Log.d("CurrencyViewModel", "Updated exchange rates: $exchangeRates")
                     
                     // Update fetched rates for display
                     val newFetchedRates = mutableMapOf<String, String>()
-                    newFetchedRates["EUR"] = String.format("%.4f", rates["EUR"] ?: 0.85)
-                    newFetchedRates["ARS"] = String.format("%.2f", rates["ARS"] ?: 350.0)
-                    newFetchedRates["PYG"] = String.format("%.0f", rates["PYG"] ?: 7300.0)
+                    newFetchedRates["EUR"] = String.format("%.4f", rates["EUR"] ?: 0.8566)
+                    newFetchedRates["ARS"] = String.format("%.2f", rates["ARS"] ?: 1266.0)
+                    newFetchedRates["PYG"] = String.format("%.0f", rates["PYG"] ?: 7828.0)
+                    newFetchedRates["BRL"] = String.format("%.2f", rates["BRL"] ?: 5.0)
+                    newFetchedRates["UYU"] = String.format("%.2f", rates["UYU"] ?: 40.0)
                     _fetchedRates.value = newFetchedRates
                     
                     Log.d("CurrencyViewModel", "Updated fetched rates for display: $newFetchedRates")
@@ -163,6 +173,14 @@ class CurrencyViewModel : ViewModel() {
             }
             currency == "ARS" -> {
                 val formatter = DecimalFormat("#,##0", symbols)
+                formatter.format(number)
+            }
+            currency == "BRL" -> {
+                val formatter = DecimalFormat("#,##0.00", symbols)
+                formatter.format(number)
+            }
+            currency == "UYU" -> {
+                val formatter = DecimalFormat("#,##0.00", symbols)
                 formatter.format(number)
             }
             else -> {

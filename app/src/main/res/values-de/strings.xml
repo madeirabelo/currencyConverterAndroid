@@ -6,6 +6,8 @@
     <string name="euro">Euro</string>
     <string name="argentine_peso">Argentinischer Peso</string>
     <string name="paraguayan_guarani">Paraguayischer Guaraní</string>
+    <string name="brazilian_real">Brasilianischer Real</string>
+    <string name="uruguayan_peso">Uruguayischer Peso</string>
     <string name="exchange_rates_usd_base">Wechselkurse (USD-Basis)</string>
     <string name="update_rates">Kurse Aktualisieren</string>
     <string name="you_entered_this_value">Sie haben diesen Wert eingegeben</string>

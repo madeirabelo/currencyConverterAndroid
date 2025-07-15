@@ -89,6 +89,10 @@ fun CurrencyConverterScreen(viewModel: CurrencyViewModel = viewModel(), onLangua
                     CurrencyInputField("ARS", stringResource(id = R.string.argentine_peso), viewModel)
                     Spacer(modifier = Modifier.height(12.dp))
                     CurrencyInputField("PYG", stringResource(id = R.string.paraguayan_guarani), viewModel)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    CurrencyInputField("BRL", stringResource(id = R.string.brazilian_real), viewModel)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    CurrencyInputField("UYU", stringResource(id = R.string.uruguayan_peso), viewModel)
                 }
             }
 
@@ -141,6 +145,8 @@ fun CurrencyConverterScreen(viewModel: CurrencyViewModel = viewModel(), onLangua
                     ExchangeRateInput("EUR", viewModel)
                     ExchangeRateInput("ARS", viewModel)
                     ExchangeRateInput("PYG", viewModel)
+                    ExchangeRateInput("BRL", viewModel)
+                    ExchangeRateInput("UYU", viewModel)
                 }
             }
 
