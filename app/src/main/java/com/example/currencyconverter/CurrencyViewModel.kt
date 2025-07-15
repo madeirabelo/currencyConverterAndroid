@@ -149,14 +149,6 @@ class CurrencyViewModel : ViewModel() {
         symbols.groupingSeparator = ' '
 
         return when {
-            currency == "PYG" -> {
-                val formatter = DecimalFormat("#,##0", symbols)
-                formatter.format(number)
-            }
-            currency == "ARS" -> {
-                val formatter = DecimalFormat("#,##0", symbols)
-                formatter.format(number)
-            }
             number >= 1_000_000 -> {
                 val formatter = DecimalFormat("#,##0.00", symbols)
                 "${formatter.format(number / 1_000_000)}M"
@@ -164,6 +156,14 @@ class CurrencyViewModel : ViewModel() {
             number >= 1_000 -> {
                 val formatter = DecimalFormat("#,##0.00", symbols)
                 "${formatter.format(number / 1_000)}k"
+            }
+            currency == "PYG" -> {
+                val formatter = DecimalFormat("#,##0", symbols)
+                formatter.format(number)
+            }
+            currency == "ARS" -> {
+                val formatter = DecimalFormat("#,##0", symbols)
+                formatter.format(number)
             }
             else -> {
                 val formatter = DecimalFormat("#,##0.00", symbols)
