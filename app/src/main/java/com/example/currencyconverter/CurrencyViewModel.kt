@@ -1,11 +1,14 @@
 package com.example.currencyconverter
 
-import android.util.Log
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import android.util.Log
 
 data class CurrencyValue(
     val currency: String,
@@ -52,6 +55,9 @@ class CurrencyViewModel : ViewModel() {
     fun setExchangeRate(currency: String, rate: Double) {
         if (currency != "USD") { // USD is always 1.0
             exchangeRates[currency] = rate
+            val newFetchedRates = _fetchedRates.value.toMutableMap()
+            newFetchedRates[currency] = formatNumber(rate, currency)
+            _fetchedRates.value = newFetchedRates
         }
     }
 
@@ -80,11 +86,7 @@ class CurrencyViewModel : ViewModel() {
                         val result = inUSD * toRate
 
                         // Format the result with appropriate decimal places
-                        val formattedResult = when {
-                            targetCurrency == "PYG" -> String.format("%.0f", result)
-                            targetCurrency == "ARS" -> String.format("%.2f", result)
-                            else -> String.format("%.2f", result)
-                        }
+                        val formattedResult = formatNumber(result, targetCurrency)
 
                         currentValues[targetCurrency] = CurrencyValue(targetCurrency, formattedResult, false)
                     }
@@ -114,9 +116,9 @@ class CurrencyViewModel : ViewModel() {
                     
                     // Update fetched rates for display
                     val newFetchedRates = mutableMapOf<String, String>()
-                    newFetchedRates["EUR"] = String.format("%.4f", rates["EUR"] ?: 0.85)
-                    newFetchedRates["ARS"] = String.format("%.2f", rates["ARS"] ?: 350.0)
-                    newFetchedRates["PYG"] = String.format("%.0f", rates["PYG"] ?: 7300.0)
+                    newFetchedRates["EUR"] = formatNumber(rates["EUR"] ?: 0.85, "EUR")
+                    newFetchedRates["ARS"] = formatNumber(rates["ARS"] ?: 350.0, "ARS")
+                    newFetchedRates["PYG"] = formatNumber(rates["PYG"] ?: 7300.0, "PYG")
                     _fetchedRates.value = newFetchedRates
                     
                     Log.d("CurrencyViewModel", "Updated fetched rates for display: $newFetchedRates")
@@ -140,5 +142,33 @@ class CurrencyViewModel : ViewModel() {
 
     fun getCurrentRates(): Map<String, Double> {
         return exchangeRates.toMap()
+    }
+
+    private fun formatNumber(number: Double, currency: String): String {
+        val symbols = DecimalFormatSymbols(Locale.getDefault())
+        symbols.groupingSeparator = ' '
+
+        return when {
+            currency == "PYG" -> {
+                val formatter = DecimalFormat("#,##0", symbols)
+                formatter.format(number)
+            }
+            currency == "ARS" -> {
+                val formatter = DecimalFormat("#,##0", symbols)
+                formatter.format(number)
+            }
+            number >= 1_000_000 -> {
+                val formatter = DecimalFormat("#,##0.00", symbols)
+                "${formatter.format(number / 1_000_000)}M"
+            }
+            number >= 1_000 -> {
+                val formatter = DecimalFormat("#,##0.00", symbols)
+                "${formatter.format(number / 1_000)}k"
+            }
+            else -> {
+                val formatter = DecimalFormat("#,##0.00", symbols)
+                formatter.format(number)
+            }
+        }
     }
 }

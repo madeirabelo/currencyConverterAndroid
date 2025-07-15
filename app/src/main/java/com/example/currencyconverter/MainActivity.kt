@@ -157,6 +157,14 @@ fun CurrencyConverterScreen(viewModel: CurrencyViewModel = viewModel(), onLangua
                     currentLocale.value = language
                 }, currentLocale = currentLocale.value)
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "António Madeira Belo",
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
         }
     }
 }
@@ -176,6 +184,7 @@ fun CurrencyInputField(
         },
         label = { Text("$currencyName ($currency)") },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        visualTransformation = ThousandsSeparatorTransformation(),
         modifier = Modifier.fillMaxWidth(),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = if (currencyValue.isUserInput) 
@@ -208,6 +217,7 @@ fun ExchangeRateInput(currency: String, viewModel: CurrencyViewModel) {
     // Update rate when fetched rates change
     LaunchedEffect(fetchedRates[currency]) {
         rate = fetchedRates[currency] ?: ""
+        showSuccess = false // Reset showSuccess when fetchedRates change
     }
 
     Row(modifier = Modifier
@@ -253,20 +263,18 @@ fun ExchangeRateInput(currency: String, viewModel: CurrencyViewModel) {
         }
     }
     
-    if (fetchedRates[currency]?.isNotEmpty() == true) {
-        Text(
-            text = stringResource(id = R.string.rate_from_api),
-            style = MaterialTheme.typography.caption,
-            color = MaterialTheme.colors.primary,
-            modifier = Modifier.padding(top = 4.dp)
-        )
-    }
-    
     if (showSuccess) {
         Text(
             text = stringResource(id = R.string.rate_updated_successfully),
             color = MaterialTheme.colors.primary,
             style = MaterialTheme.typography.caption,
+            modifier = Modifier.padding(top = 4.dp)
+        )
+    } else if (fetchedRates[currency]?.isNotEmpty() == true) {
+        Text(
+            text = stringResource(id = R.string.rate_from_api),
+            style = MaterialTheme.typography.caption,
+            color = MaterialTheme.colors.primary,
             modifier = Modifier.padding(top = 4.dp)
         )
     }
