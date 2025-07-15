@@ -56,7 +56,7 @@ class CurrencyViewModel : ViewModel() {
         if (currency != "USD") { // USD is always 1.0
             exchangeRates[currency] = rate
             val newFetchedRates = _fetchedRates.value.toMutableMap()
-            newFetchedRates[currency] = formatNumber(rate, currency)
+            newFetchedRates[currency] = String.format("%.4f", rate)
             _fetchedRates.value = newFetchedRates
         }
     }
@@ -116,9 +116,9 @@ class CurrencyViewModel : ViewModel() {
                     
                     // Update fetched rates for display
                     val newFetchedRates = mutableMapOf<String, String>()
-                    newFetchedRates["EUR"] = formatNumber(rates["EUR"] ?: 0.85, "EUR")
-                    newFetchedRates["ARS"] = formatNumber(rates["ARS"] ?: 350.0, "ARS")
-                    newFetchedRates["PYG"] = formatNumber(rates["PYG"] ?: 7300.0, "PYG")
+                    newFetchedRates["EUR"] = String.format("%.4f", rates["EUR"] ?: 0.85)
+                    newFetchedRates["ARS"] = String.format("%.2f", rates["ARS"] ?: 350.0)
+                    newFetchedRates["PYG"] = String.format("%.0f", rates["PYG"] ?: 7300.0)
                     _fetchedRates.value = newFetchedRates
                     
                     Log.d("CurrencyViewModel", "Updated fetched rates for display: $newFetchedRates")
