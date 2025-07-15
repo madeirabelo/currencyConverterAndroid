@@ -48,95 +48,116 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CurrencyConverterScreen(viewModel: CurrencyViewModel = viewModel(), onLanguageSelected: (String) -> Unit) {
     val scrollState = rememberScrollState()
-    
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(id = R.string.app_name),
-            style = MaterialTheme.typography.h4,
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
+    val currentLocale = remember { mutableStateOf(Locale.getDefault().language) }
 
-        LanguageSwitcher(onLanguageSelected = onLanguageSelected)
+    LaunchedEffect(Unit) {
+        currentLocale.value = Locale.getDefault().language
+    }
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            elevation = 4.dp
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = stringResource(id = R.string.enter_value_in_any_currency),
-                    style = MaterialTheme.typography.h6,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
+            Text(
+                text = stringResource(id = R.string.app_name),
+                style = MaterialTheme.typography.h4,
+                modifier = Modifier.padding(bottom = 24.dp)
+            )
 
-                // Currency Input Fields
-                CurrencyInputField("USD", stringResource(id = R.string.us_dollar), viewModel)
-                Spacer(modifier = Modifier.height(12.dp))
-                CurrencyInputField("EUR", stringResource(id = R.string.euro), viewModel)
-                Spacer(modifier = Modifier.height(12.dp))
-                CurrencyInputField("ARS", stringResource(id = R.string.argentine_peso), viewModel)
-                Spacer(modifier = Modifier.height(12.dp))
-                CurrencyInputField("PYG", stringResource(id = R.string.paraguayan_guarani), viewModel)
-            }
-        }
+            // Main content of the currency converter
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            elevation = 4.dp
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = 4.dp
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = stringResource(id = R.string.exchange_rates_usd_base),
-                        style = MaterialTheme.typography.h6
+                        text = stringResource(id = R.string.enter_value_in_any_currency),
+                        style = MaterialTheme.typography.h6,
+                        modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    
-                    Button(
-                        onClick = { viewModel.fetchLatestRates() },
-                        enabled = !viewModel.isLoading.value
+
+                    // Currency Input Fields
+                    CurrencyInputField("USD", stringResource(id = R.string.us_dollar), viewModel)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    CurrencyInputField("EUR", stringResource(id = R.string.euro), viewModel)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    CurrencyInputField("ARS", stringResource(id = R.string.argentine_peso), viewModel)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    CurrencyInputField("PYG", stringResource(id = R.string.paraguayan_guarani), viewModel)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = 4.dp
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        if (viewModel.isLoading.value) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(16.dp),
-                                strokeWidth = 2.dp
-                            )
-                        } else {
-                            Text(stringResource(id = R.string.update_rates))
+                        Text(
+                            text = stringResource(id = R.string.exchange_rates_usd_base),
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Button(
+                            onClick = { viewModel.fetchLatestRates() },
+                            enabled = !viewModel.isLoading.value,
+                            modifier = Modifier.wrapContentWidth()
+                        ) {
+                            if (viewModel.isLoading.value) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(16.dp),
+                                    strokeWidth = 2.dp
+                                )
+                            } else {
+                                Text(stringResource(id = R.string.update_rates))
+                            }
                         }
                     }
+
+                    if (viewModel.lastUpdateTime.value.isNotEmpty()) {
+                        Text(
+                            text = viewModel.lastUpdateTime.value,
+                            style = MaterialTheme.typography.caption,
+                            color = MaterialTheme.colors.primary,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    ExchangeRateInput("EUR", viewModel)
+                    ExchangeRateInput("ARS", viewModel)
+                    ExchangeRateInput("PYG", viewModel)
                 }
-                
-                if (viewModel.lastUpdateTime.value.isNotEmpty()) {
-                    Text(
-                        text = viewModel.lastUpdateTime.value,
-                        style = MaterialTheme.typography.caption,
-                        color = MaterialTheme.colors.primary,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
-                
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                ExchangeRateInput("EUR", viewModel)
-                ExchangeRateInput("ARS", viewModel)
-                ExchangeRateInput("PYG", viewModel)
+            }
+
+            // Add some bottom padding to ensure all content is accessible
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                LanguageSwitcher(onLanguageSelected = { language ->
+                    onLanguageSelected(language)
+                    currentLocale.value = language
+                }, currentLocale = currentLocale.value)
             }
         }
-        
-        // Add some bottom padding to ensure all content is accessible
-        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
@@ -252,26 +273,30 @@ fun ExchangeRateInput(currency: String, viewModel: CurrencyViewModel) {
 }
 
 @Composable
-fun LanguageSwitcher(onLanguageSelected: (String) -> Unit) {
+fun LanguageSwitcher(onLanguageSelected: (String) -> Unit, currentLocale: String) {
     var expanded by remember { mutableStateOf(false) }
-    val items = listOf("en" to "English", "pt" to "Português", "es" to "Español", "fr" to "Français", "de" to "Deutsch")
-    var selectedIndex by remember { mutableStateOf(0) }
+    val items = listOf("en" to "EN", "pt" to "PT", "es" to "ES", "fr" to "FR", "de" to "DE")
 
-    Box {
-        Button(onClick = { expanded = true }) {
-            Text(items[selectedIndex].second)
+    var selectedDisplayCode by remember { mutableStateOf(items.firstOrNull { it.first == currentLocale }?.second ?: "") }
+
+    Box(modifier = Modifier
+        .wrapContentSize(Alignment.TopEnd)
+        .padding(16.dp)
+    ) {
+        Button(onClick = { expanded = true }, modifier = Modifier.width(72.dp)) {
+            Text(selectedDisplayCode)
         }
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            items.forEachIndexed { index, (code, name) ->
+            items.forEach { (code, name) ->
                 DropdownMenuItem(onClick = {
-                    selectedIndex = index
                     expanded = false
+                    selectedDisplayCode = name
                     onLanguageSelected(code)
                 }) {
-                    Text(text = name)
+                    Text(text = name, style = MaterialTheme.typography.body2)
                 }
             }
         }
