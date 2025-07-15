@@ -1,4 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <string name="app_name">Currency Converter</string>
+    <string name="enter_value_in_any_currency">Enter value in any currency</string>
+    <string name="us_dollar">US Dollar</string>
+    <string name="euro">Euro</string>
+    <string name="argentine_peso">Argentine Peso</string>
+    <string name="paraguayan_guarani">Paraguayan Guaraní</string>
+    <string name="exchange_rates_usd_base">Exchange Rates (USD Base)</string>
+    <string name="update_rates">Update Rates</string>
+    <string name="you_entered_this_value">You entered this value</string>
+    <string name="one_usd_equals">1 USD =</string>
+    <string name="set">Set</string>
+    <string name="rate_from_api">Rate from API</string>
+    <string name="rate_updated_successfully">Rate updated successfully!</string>
 </resources>

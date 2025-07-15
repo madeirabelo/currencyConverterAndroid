@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Convertisseur de Devises</string>
+    <string name="enter_value_in_any_currency">"Saisissez la valeur dans n'importe quelle devise"</string>
+    <string name="us_dollar">Dollar Américain</string>
+    <string name="euro">Euro</string>
+    <string name="argentine_peso">Peso Argentin</string>
+    <string name="paraguayan_guarani">Guarani Paraguayen</string>
+    <string name="exchange_rates_usd_base">Taux de Change (Base USD)</string>
+    <string name="update_rates">Mettre à Jour les Taux</string>
+    <string name="you_entered_this_value">Vous avez saisi cette valeur</string>
+    <string name="one_usd_equals">1 USD =</string>
+    <string name="set">Définir</string>
+    <string name="rate_from_api">"Taux de l'API"</string>
+    <string name="rate_updated_successfully">Taux mis à jour avec succès !</string>
+</resources>

@@ -1,0 +1,16 @@
+
+<resources>
+    <string name="app_name">Convertidor de Divisas</string>
+    <string name="enter_value_in_any_currency">Ingrese el valor en cualquier moneda</string>
+    <string name="us_dollar">Dólar Estadounidense</string>
+    <string name="euro">Euro</string>
+    <string name="argentine_peso">Peso Argentino</string>
+    <string name="paraguayan_guarani">Guaraní Paraguayo</string>
+    <string name="exchange_rates_usd_base">Tasas de Cambio (Base USD)</string>
+    <string name="update_rates">Actualizar Tasas</string>
+    <string name="you_entered_this_value">Usted ingresó este valor</string>
+    <string name="one_usd_equals">1 USD =</string>
+    <string name="set">Establecer</string>
+    <string name="rate_from_api">Tasa de la API</string>
+    <string name="rate_updated_successfully">¡Tasa actualizada con éxito!</string>
+</resources>

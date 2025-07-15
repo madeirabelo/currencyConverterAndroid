@@ -15,21 +15,38 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+
+import android.content.res.Configuration
+import java.util.Locale
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    CurrencyConverterScreen()
+                    CurrencyConverterScreen(onLanguageSelected = { language ->
+                        setLocale(language)
+                    })
                 }
             }
         }
     }
+
+    private fun setLocale(language: String) {
+        val locale = Locale(language)
+        Locale.setDefault(locale)
+        val config = resources.configuration
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
+        recreate()
+    }
 }
 
 @Composable
-fun CurrencyConverterScreen(viewModel: CurrencyViewModel = viewModel()) {
+fun CurrencyConverterScreen(viewModel: CurrencyViewModel = viewModel(), onLanguageSelected: (String) -> Unit) {
     val scrollState = rememberScrollState()
     
     Column(
@@ -40,10 +57,12 @@ fun CurrencyConverterScreen(viewModel: CurrencyViewModel = viewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Currency Converter",
+            text = stringResource(id = R.string.app_name),
             style = MaterialTheme.typography.h4,
             modifier = Modifier.padding(bottom = 24.dp)
         )
+
+        LanguageSwitcher(onLanguageSelected = onLanguageSelected)
 
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -51,19 +70,19 @@ fun CurrencyConverterScreen(viewModel: CurrencyViewModel = viewModel()) {
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = "Enter value in any currency",
+                    text = stringResource(id = R.string.enter_value_in_any_currency),
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
                 // Currency Input Fields
-                CurrencyInputField("USD", "US Dollar", viewModel)
+                CurrencyInputField("USD", stringResource(id = R.string.us_dollar), viewModel)
                 Spacer(modifier = Modifier.height(12.dp))
-                CurrencyInputField("EUR", "Euro", viewModel)
+                CurrencyInputField("EUR", stringResource(id = R.string.euro), viewModel)
                 Spacer(modifier = Modifier.height(12.dp))
-                CurrencyInputField("ARS", "Argentine Peso", viewModel)
+                CurrencyInputField("ARS", stringResource(id = R.string.argentine_peso), viewModel)
                 Spacer(modifier = Modifier.height(12.dp))
-                CurrencyInputField("PYG", "Paraguayan Guaraní", viewModel)
+                CurrencyInputField("PYG", stringResource(id = R.string.paraguayan_guarani), viewModel)
             }
         }
 
@@ -80,7 +99,7 @@ fun CurrencyConverterScreen(viewModel: CurrencyViewModel = viewModel()) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Exchange Rates (USD Base)",
+                        text = stringResource(id = R.string.exchange_rates_usd_base),
                         style = MaterialTheme.typography.h6
                     )
                     
@@ -94,7 +113,7 @@ fun CurrencyConverterScreen(viewModel: CurrencyViewModel = viewModel()) {
                                 strokeWidth = 2.dp
                             )
                         } else {
-                            Text("Update Rates")
+                            Text(stringResource(id = R.string.update_rates))
                         }
                     }
                 }
@@ -151,7 +170,7 @@ fun CurrencyInputField(
     
     if (currencyValue.isUserInput && currencyValue.value.isNotEmpty()) {
         Text(
-            text = "You entered this value",
+            text = stringResource(id = R.string.you_entered_this_value),
             style = MaterialTheme.typography.caption,
             color = MaterialTheme.colors.primary,
             modifier = Modifier.padding(top = 4.dp)
@@ -175,7 +194,7 @@ fun ExchangeRateInput(currency: String, viewModel: CurrencyViewModel) {
         .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text("1 USD = ", modifier = Modifier.padding(end = 8.dp))
+        Text(stringResource(id = R.string.one_usd_equals), modifier = Modifier.padding(end = 8.dp))
         
         OutlinedTextField(
             value = rate,
@@ -209,13 +228,13 @@ fun ExchangeRateInput(currency: String, viewModel: CurrencyViewModel) {
             modifier = Modifier.padding(start = 8.dp),
             enabled = rate.isNotEmpty()
         ) {
-            Text("Set")
+            Text(stringResource(id = R.string.set))
         }
     }
     
     if (fetchedRates[currency]?.isNotEmpty() == true) {
         Text(
-            text = "Rate from API",
+            text = stringResource(id = R.string.rate_from_api),
             style = MaterialTheme.typography.caption,
             color = MaterialTheme.colors.primary,
             modifier = Modifier.padding(top = 4.dp)
@@ -224,10 +243,37 @@ fun ExchangeRateInput(currency: String, viewModel: CurrencyViewModel) {
     
     if (showSuccess) {
         Text(
-            text = "Rate updated successfully!",
+            text = stringResource(id = R.string.rate_updated_successfully),
             color = MaterialTheme.colors.primary,
             style = MaterialTheme.typography.caption,
             modifier = Modifier.padding(top = 4.dp)
         )
+    }
+}
+
+@Composable
+fun LanguageSwitcher(onLanguageSelected: (String) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    val items = listOf("en" to "English", "pt" to "Português", "es" to "Español", "fr" to "Français", "de" to "Deutsch")
+    var selectedIndex by remember { mutableStateOf(0) }
+
+    Box {
+        Button(onClick = { expanded = true }) {
+            Text(items[selectedIndex].second)
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            items.forEachIndexed { index, (code, name) ->
+                DropdownMenuItem(onClick = {
+                    selectedIndex = index
+                    expanded = false
+                    onLanguageSelected(code)
+                }) {
+                    Text(text = name)
+                }
+            }
+        }
     }
 }

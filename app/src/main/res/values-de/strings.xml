@@ -1,0 +1,16 @@
+
+<resources>
+    <string name="app_name">Währungsrechner</string>
+    <string name="enter_value_in_any_currency">Geben Sie den Wert in einer beliebigen Währung ein</string>
+    <string name="us_dollar">US-Dollar</string>
+    <string name="euro">Euro</string>
+    <string name="argentine_peso">Argentinischer Peso</string>
+    <string name="paraguayan_guarani">Paraguayischer Guaraní</string>
+    <string name="exchange_rates_usd_base">Wechselkurse (USD-Basis)</string>
+    <string name="update_rates">Kurse Aktualisieren</string>
+    <string name="you_entered_this_value">Sie haben diesen Wert eingegeben</string>
+    <string name="one_usd_equals">1 USD =</string>
+    <string name="set">Einstellen</string>
+    <string name="rate_from_api">Kurs von der API</string>
+    <string name="rate_updated_successfully">Kurs erfolgreich aktualisiert!</string>
+</resources>
